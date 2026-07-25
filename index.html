@@ -218,6 +218,11 @@ html.js .reveal.in{opacity:1;transform:none;transition:opacity .6s ease,transfor
    repos.forEach(function(repo){var it=document.createElement('div');it.className='lg-item';
      it.innerHTML='<span class="lg-dot" style="background:'+REPO_COLORS[repo]+'"></span>'+REPO_LABELS[repo];lg.appendChild(it);});
    document.getElementById('tl-loading').style.display='none';document.getElementById('tl-content').style.display='block';
+   // Open on TODAY, not on the inception date. The chart is wider than the viewport
+   // and grows a column a day, so a left-anchored view shows ever-staler history and
+   // buries current activity off-screen to the right. Must run after display:block —
+   // scrollWidth is 0 while hidden. Over-scroll clamps to max, so no overflow = no-op.
+   var w=document.querySelector('.tl-wrap'); if(w)w.scrollLeft=w.scrollWidth;
  }
 })();
 </script><script>
