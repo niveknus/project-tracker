@@ -76,7 +76,13 @@ html.js .hero .fade{opacity:0;animation:fadeup .9s ease both;animation-delay:var
 .tl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -2px;padding:0 2px}
 .tl-chart{display:flex;align-items:flex-end;gap:2px;height:120px;min-width:fit-content}
 .tl-labels{display:flex;gap:2px;margin-top:5px;min-width:fit-content}
-.tl-label{min-width:8px;flex:1;max-width:18px;font-size:8px;color:var(--muted);text-align:center;white-space:nowrap}
+/* Label columns must size EXACTLY like the bar columns above them, or the two
+   flex rows end up different widths and the dates drift right of their bars
+   (the axis then runs past the last bar and the chart reads as "cut off").
+   The date text is taken out of flow so a labelled column contributes the same
+   8px as an empty one; the text overflows, centred on its column. */
+.tl-label{min-width:8px;flex:1;max-width:18px;font-size:8px;color:var(--muted);white-space:nowrap;position:relative;height:11px}
+.tl-label>span{position:absolute;left:50%;top:0;transform:translateX(-50%)}
 .tl-legend{display:flex;gap:14px;margin-top:13px;flex-wrap:wrap}
 .lg-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
 .lg-dot{width:10px;height:10px;border-radius:3px}
@@ -205,7 +211,8 @@ html.js .reveal.in{opacity:1;transform:none;transition:opacity .6s ease,transfor
      (function(t){bar.addEventListener('mouseenter',function(e){showTip(e,t.join('\n'));});})(tp);
      bar.addEventListener('mousemove',moveTip);bar.addEventListener('mouseleave',hideTip);chart.appendChild(bar);
      var lb=document.createElement('div');lb.className='tl-label';var dd=new Date(day+'T00:00:00');
-     if(i===0||dd.getDate()===1||i%7===0)lb.textContent=(dd.getMonth()+1)+'/'+dd.getDate();labels.appendChild(lb);
+     if(i===0||dd.getDate()===1||i%7===0){var sp=document.createElement('span');sp.textContent=(dd.getMonth()+1)+'/'+dd.getDate();lb.appendChild(sp);}
+     labels.appendChild(lb);
    });
    var lg=document.getElementById('tl-legend');lg.innerHTML='';
    repos.forEach(function(repo){var it=document.createElement('div');it.className='lg-item';
